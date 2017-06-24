@@ -30,13 +30,12 @@
   font-size: 20px;
   font-family: Arial, Helvetica, sans-serif;
   padding-top: 10px;
-  padding-left: 80px;
+  padding-left: 60px;
   height: 40px;
 }
 
 .info {
   clear: both;
-  margin-left: 20px;
   color:green;
   font-size: 40px;
   font-family: Arial, Helvetica, sans-serif;
@@ -51,7 +50,7 @@ ul {
 
 input {
   height: 40px;
-  width: 370px;
+  width: 320px;
   margin-left: 40px;
   font-size: 35px;
   font-family: Arial, Helvetica, sans-serif;
@@ -87,4 +86,21 @@ html, body {
 .footer {
   color: #999999;
   text-align: center;
+}
+
+button.reload {
+  height: 40px;
+  width: 150px;
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-left: 130px;
+  color: white;
+  border:0px solid #d1dcdf;
+  -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;
+}
+
+button.reload:hover{
+ background: grey;
+ cursor: pointer;
+
 }

@@ -2,32 +2,39 @@
   <section class="motusApp">
   <div class="erreur">{{ erreur }}</div>
     <header>
-      <input type="text" v-model="proposition" @keyup.enter="checkMot" maxlength="8">
+      <input type="text" v-model="proposition" @keyup.enter="checkMot" maxlength="7">
     </header>
     <div>
       <ul>
         <li class="mot" v-for="mot in historique">
-          <span class="lettre" v-for="n in 8" :class="{orange: mot.verif[n-1], jaune: mot.existe[n-1]}"> 
+          <span class="lettre" v-for="n in longueurMot" :class="{orange: mot.verif[n-1], jaune: mot.existe[n-1]}"> 
             {{ mot.lettres[n-1] }} 
           </span>
         </li>
       </ul>
     </div>  
-    <div class="info">{{ info }}</div>   
+    <div class="info">{{ info }}</div> 
+    <br/>
+    <br/>
+    <button class="reload" onclick="location.reload();">Nouveau mot</button>  
   </section>
 </template>
 
 <script>
+  import mot7 from '../assets/liste_7.json'
+
   export default {
     data () {
       return {
-        listeMot: ['DOUZIEME'.split(''), 'ATTERRIR'.split(''), 'VACANCES'.split(''), 'SOUPIERE'.split(''), 'RONFLEUR'.split(''), 'CERFEUIL'.split(''), 'SEXUELLE'.split(''), 'ENCADRER'.split('')],
+        listeMot: mot7,
         historique: [],
         proposition: '',
         motATrouver: '',
         erreur: '',
         info: '',
-        tentative: 6
+        tentative: 8,
+        longueurMot: 7,
+        motDispo: 3360
       }
     },
     methods: {
@@ -41,16 +48,12 @@
       },
       checkMot () {
         this.erreur = ''
-        if (this.historique.length === this.tentatives + 1) {
-          // Max de tentatives atteint
-          this.erreur = ' Perdu !'
-          this.proposition = ''
-        } else if (this.proposition.length !== 8) {
+        if (this.proposition.length !== this.longueurMot) {
           // Mot proposé par assez long
           this.addMot(this.motATrouver[0], this.fillArray(false, 8, true), this.fillArray(false, 8))
           this.erreur = 'Le mot doit contenir 8 lettres'
         } else {
-          var tempo1 = this.motATrouver
+          var tempo1 = this.motATrouver.split('')
           var tempo2 = this.proposition.split('')
           var verif = []
           var existe = []
@@ -70,10 +73,14 @@
             }
           }
           // Si toutes les lettres sont bien placées
-          if (verif.filter(v => v).length === 8) {
+          if (verif.filter(v => v).length === this.longueurMot) {
             this.info = 'Bravo !'
           }
           this.addMot(this.proposition, verif, existe)
+          if (this.historique.length === this.tentative) {
+            // Max de tentatives atteint
+            this.erreur = ' Perdu ! Le mot était : ' + this.motATrouver.toUpperCase()
+          }
         }
       },
       fillArray (value, len, firstValue) {
@@ -90,12 +97,12 @@
       }
     },
     created () {
-      var rand = Math.floor(Math.random() * 8)
-      this.motATrouver = this.listeMot[rand]
+      var rand = Math.floor(Math.random() * this.motDispo)
+      this.motATrouver = this.listeMot[rand].mot
       this.historique.push({
-        lettres: this.motATrouver[0],
-        verif: this.fillArray(false, 8, true),
-        existe: this.fillArray(false, 8)
+        lettres: this.motATrouver.split('')[0],
+        verif: this.fillArray(false, this.longueurMot, true),
+        existe: this.fillArray(false, this.longueurMot)
       })
     }
   }
