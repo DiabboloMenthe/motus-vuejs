@@ -22,12 +22,12 @@
     data () {
       return {
         listeMot: ['DOUZIEME'.split(''), 'ATTERRIR'.split(''), 'VACANCES'.split(''), 'SOUPIERE'.split(''), 'RONFLEUR'.split(''), 'CERFEUIL'.split(''), 'SEXUELLE'.split(''), 'ENCADRER'.split('')],
-        positionInit: [true, false, false, false, false, false, false, false],
         historique: [],
         proposition: '',
         motATrouver: '',
         erreur: '',
-        info: ''
+        info: '',
+        tentative: 6
       }
     },
     methods: {
@@ -41,13 +41,13 @@
       },
       checkMot () {
         this.erreur = ''
-        if (this.historique.length === 7) {
+        if (this.historique.length === this.tentatives + 1) {
           // Max de tentatives atteint
           this.erreur = ' Perdu !'
           this.proposition = ''
         } else if (this.proposition.length !== 8) {
           // Mot proposé par assez long
-          this.addMot(this.motATrouver[0], this.positionInit, this.fillArray(false, 8))
+          this.addMot(this.motATrouver[0], this.fillArray(false, 8, true), this.fillArray(false, 8))
           this.erreur = 'Le mot doit contenir 8 lettres'
         } else {
           var tempo1 = this.motATrouver
@@ -59,7 +59,7 @@
               // La lettre est bien placée
               verif.push(true)
               existe.push(false)
-            } else if (tempo1.filter(l => l.toUpperCase() === tempo2[i].toUpperCase()).length > 0) {
+            } else if (tempo1.filter(val => val.toUpperCase() === tempo2[i].toUpperCase()).length > 0) {
               // La lettre est mal placée
               verif.push(false)
               existe.push(true)
@@ -76,9 +76,14 @@
           this.addMot(this.proposition, verif, existe)
         }
       },
-      fillArray (value, len) {
+      fillArray (value, len, firstValue) {
         var arr = []
-        for (var i = 0; i < len; i++) {
+        var start = 0
+        if (firstValue !== null) {
+          arr.push(firstValue)
+          start = 1
+        }
+        for (var i = start; i < len; i++) {
           arr.push(value)
         }
         return arr
@@ -89,7 +94,7 @@
       this.motATrouver = this.listeMot[rand]
       this.historique.push({
         lettres: this.motATrouver[0],
-        verif: this.positionInit,
+        verif: this.fillArray(false, 8, true),
         existe: this.fillArray(false, 8)
       })
     }
