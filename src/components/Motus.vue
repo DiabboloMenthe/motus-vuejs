@@ -34,7 +34,8 @@
         info: '',
         tentative: 8,
         longueurMot: 7,
-        motDispo: 3360
+        motDispo: 3360,
+        victoire: false
       }
     },
     methods: {
@@ -47,39 +48,44 @@
         this.proposition = ''
       },
       checkMot () {
-        this.erreur = ''
-        if (this.proposition.length !== this.longueurMot) {
-          // Mot proposé par assez long
-          this.addMot(this.motATrouver[0], this.fillArray(false, 8, true), this.fillArray(false, 8))
-          this.erreur = 'Le mot doit contenir 8 lettres'
+        if (this.victoire) {
+          event.preventDefault()
+          return false
         } else {
-          var tempo1 = this.motATrouver.split('')
-          var tempo2 = this.proposition.split('')
-          var verif = []
-          var existe = []
-          for (var i = 0, c = tempo2.length; i < c; i++) {
-            if (tempo1[i].toUpperCase() === tempo2[i].toUpperCase()) {
-              // La lettre est bien placée
-              verif.push(true)
-              existe.push(false)
-            } else if (tempo1.filter(val => val.toUpperCase() === tempo2[i].toUpperCase()).length > 0) {
-              // La lettre est mal placée
-              verif.push(false)
-              existe.push(true)
-            } else {
-              // La lettre n'existe pas
-              verif.push(false)
-              existe.push(false)
+          this.erreur = ''
+          if (this.proposition.length !== this.longueurMot) {
+            // Mot proposé par assez long
+            this.addMot(this.motATrouver[0], this.fillArray(false, 8, true), this.fillArray(false, 8))
+            this.erreur = 'Le mot doit contenir 8 lettres'
+          } else {
+            var tempo1 = this.motATrouver.split('')
+            var tempo2 = this.proposition.split('')
+            var verif = []
+            var existe = []
+            for (var i = 0, c = tempo2.length; i < c; i++) {
+              if (tempo1[i].toUpperCase() === tempo2[i].toUpperCase()) {
+                // La lettre est bien placée
+                verif.push(true)
+                existe.push(false)
+              } else if (tempo1.filter(val => val.toUpperCase() === tempo2[i].toUpperCase()).length > 0) {
+                // La lettre est mal placée
+                verif.push(false)
+                existe.push(true)
+              } else {
+                // La lettre n'existe pas
+                verif.push(false)
+                existe.push(false)
+              }
             }
-          }
-          // Si toutes les lettres sont bien placées
-          if (verif.filter(v => v).length === this.longueurMot) {
-            this.info = 'Bravo !'
-          }
-          this.addMot(this.proposition, verif, existe)
-          if (this.historique.length === this.tentative) {
-            // Max de tentatives atteint
-            this.erreur = ' Perdu ! Le mot était : ' + this.motATrouver.toUpperCase()
+            // Si toutes les lettres sont bien placées
+            if (verif.filter(v => v).length === this.longueurMot) {
+              this.info = 'Bravo !'
+              this.victoire = true
+            } else if (this.historique.length === this.tentative) {
+              // Max de tentatives atteint
+              this.erreur = ' Perdu ! Le mot était : ' + this.motATrouver.toUpperCase()
+            }
+            this.addMot(this.proposition, verif, existe)
           }
         }
       },
