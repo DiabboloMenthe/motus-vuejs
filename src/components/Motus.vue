@@ -13,8 +13,7 @@
         </li>
       </ul>
     </div>  
-    <div class="info">{{ info }}</div> 
-    <br/>
+    <div :class="{'info-victoire': partieTerminee, info: !partieTerminee}">{{ info }}</div> 
     <br/>
     <button class="reload" onclick="location.reload();">Nouveau mot</button>  
   </section>
@@ -62,7 +61,7 @@
             var tempo2 = this.proposition.split('')
             var verif = []
             var existe = []
-            for (var i = 0, c = tempo2.length; i < c; i++) {
+            for (var i = 0, c = this.longueurMot; i < c; i++) {
               if (tempo1[i].toUpperCase() === tempo2[i].toUpperCase()) {
                 // La lettre est bien placée
                 verif.push(true)
@@ -77,16 +76,28 @@
                 existe.push(false)
               }
             }
-            // Si toutes les lettres sont bien placées
-            if (verif.filter(v => v).length === this.longueurMot) {
-              this.info = 'Bravo !'
-              this.partieTerminee = true
-            } else if (this.historique.length === this.tentative) {
-              // Max de tentatives atteint
-              this.erreur = ' Perdu :( le mot était : ' + this.motATrouver.toUpperCase()
-              this.partieTerminee = true
-            }
+            this.verifAvancementPartie(verif)
             this.addMot(this.proposition, verif, existe)
+          }
+        }
+      },
+      verifAvancementPartie (verif) {
+        // Si toutes les lettres sont bien placées
+        if (verif.filter(v => v).length === this.longueurMot) {
+          this.info = 'Bravo !'
+          this.partieTerminee = true
+          this.erreur = ''
+        } else if (this.historique.length === this.tentative) {
+          // Max de tentatives atteint
+          this.erreur = ' Perdu :( le mot était : ' + this.motATrouver.toUpperCase()
+          this.partieTerminee = true
+          this.info = ''
+        } else {
+          var calcul = this.tentative - this.historique.length
+          if (calcul === 1) {
+            this.info = calcul + ' tentative restante'
+          } else {
+            this.info = calcul + ' tentatives restantes'
           }
         }
       },
@@ -111,6 +122,7 @@
         verif: this.fillArray(false, this.longueurMot, true),
         existe: this.fillArray(false, this.longueurMot)
       })
+      this.info = this.tentative + ' tentatives restantes'
     }
   }
 </script>
