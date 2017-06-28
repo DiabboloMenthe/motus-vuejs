@@ -35,7 +35,7 @@
         tentative: 8,
         longueurMot: 7,
         motDispo: 3360,
-        victoire: false
+        partieTerminee: false
       }
     },
     methods: {
@@ -48,15 +48,15 @@
         this.proposition = ''
       },
       checkMot () {
-        if (this.victoire) {
+        if (this.partieTerminee) {
           event.preventDefault()
           return false
         } else {
           this.erreur = ''
           if (this.proposition.length !== this.longueurMot) {
             // Mot proposé par assez long
-            this.addMot(this.motATrouver[0], this.fillArray(false, 8, true), this.fillArray(false, 8))
-            this.erreur = 'Le mot doit contenir 8 lettres'
+            this.addMot(this.motATrouver[0], this.fillArray(false, this.longueurMot, true), this.fillArray(false, this.longueurMot))
+            this.erreur = 'Le mot doit contenir ' + this.longueurMot + ' lettres'
           } else {
             var tempo1 = this.motATrouver.split('')
             var tempo2 = this.proposition.split('')
@@ -80,10 +80,11 @@
             // Si toutes les lettres sont bien placées
             if (verif.filter(v => v).length === this.longueurMot) {
               this.info = 'Bravo !'
-              this.victoire = true
+              this.partieTerminee = true
             } else if (this.historique.length === this.tentative) {
               // Max de tentatives atteint
-              this.erreur = ' Perdu ! Le mot était : ' + this.motATrouver.toUpperCase()
+              this.erreur = ' Perdu :( le mot était : ' + this.motATrouver.toUpperCase()
+              this.partieTerminee = true
             }
             this.addMot(this.proposition, verif, existe)
           }

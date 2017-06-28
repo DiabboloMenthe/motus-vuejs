@@ -95,12 +95,11 @@ button.reload {
   font-family: Arial, Helvetica, sans-serif;
   margin-left: 130px;
   color: white;
-  border:0px solid #d1dcdf;
+  border: 2px solid white;
   -webkit-border-radius: 3px; -moz-border-radius: 3px;border-radius: 3px;
 }
 
 button.reload:hover{
- background: grey;
- cursor: pointer;
-
+  background: grey;
+  cursor: pointer;
 }
